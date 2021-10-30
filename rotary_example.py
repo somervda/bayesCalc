@@ -19,14 +19,16 @@ from rotary_irq import RotaryIRQ
 WIDTH = 128
 HEIGHT = 64
 i2c = machine.I2C(0, scl=machine.Pin(17), sda=machine.Pin(16))
-oled = SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x27)
+oled = SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x3D)
 
 r = RotaryIRQ(pin_num_clk=15,
               pin_num_dt=14,
+              pin_num_sw=13,
               min_val=0,
-              max_val=100,
+              max_val=1000,
               reverse=False,
-              range_mode=RotaryIRQ.RANGE_BOUNDED)
+              range_mode=RotaryIRQ.RANGE_BOUNDED,
+              incr=100)
 
 val_old = r.value()
 while True:
