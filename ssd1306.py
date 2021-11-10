@@ -25,6 +25,8 @@ SET_CHARGE_PUMP = const(0x8D)
 
 # Subclassing FrameBuffer provides support for graphics primitives
 # http://docs.micropython.org/en/latest/pyboard/library/framebuf.html
+
+
 class SSD1306(framebuf.FrameBuffer):
     def __init__(self, width, height, external_vcc):
         self.width = width
@@ -84,6 +86,12 @@ class SSD1306(framebuf.FrameBuffer):
 
     def invert(self, invert):
         self.write_cmd(SET_NORM_INV | (invert & 1))
+
+    def width(self):
+        return self.width
+
+    def height(self):
+        return self.height
 
     def show(self):
         x0 = 0

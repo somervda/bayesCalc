@@ -10,16 +10,18 @@
 
 from machine import Pin, I2C, Timer
 from ssd1306 import SSD1306_I2C
-import framebuf
-
+from dial_oled import Dial_Oled
 import time
 from rotary_irq import RotaryIRQ
 
 # Set up OLED display interface
 WIDTH = 128
 HEIGHT = 64
-i2c = machine.I2C(0, scl=machine.Pin(17), sda=machine.Pin(16))
-oled = SSD1306_I2C(WIDTH, HEIGHT, i2c, addr=0x3D)
+
+i2c0 = machine.I2C(0, scl=machine.Pin(17), sda=machine.Pin(16))
+oled3D = SSD1306_I2C(WIDTH, HEIGHT, i2c0, addr=0x3D)
+dial_oled3D = Dial_Oled(oled3D, "P(B)")
+
 
 r = RotaryIRQ(pin_num_clk=15,
               pin_num_dt=14,
@@ -30,15 +32,14 @@ r = RotaryIRQ(pin_num_clk=15,
               range_mode=RotaryIRQ.RANGE_BOUNDED,
               incr=100)
 
+
 val_old = r.value()
 while True:
     val_new = r.value()
+    print("val_old:", val_old, " val_new:", val_new)
 
     if val_old != val_new:
         val_old = val_new
-        # print('result =', val_new)
-        oled.fill(0)
-        oled.text("P(B) " + str(val_new), 5, 5)
-        oled.show()
+        dial_oled3D.show_value(val_new)
 
     time.sleep_ms(50)

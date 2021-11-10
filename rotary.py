@@ -62,7 +62,7 @@ class Rotary(object):
     RANGE_WRAP = const(2)
     RANGE_BOUNDED = const(3)
 
-    def __init__(self, min_val, max_val, reverse, range_mode, incr, value_change_callback=None):
+    def __init__(self, min_val, max_val, reverse, range_mode, incr):
         self._min_val = min_val
         self._max_val = max_val
         self._reverse = -1 if reverse else 1
@@ -70,8 +70,6 @@ class Rotary(object):
         self._value = min_val
         self._state = _R_START
         self._incr = incr
-
-        self._value_change_callback = value_change_callback
 
     def set(self, value=None, min_val=None, max_val=None, reverse=None, range_mode=None):
         # disable DT and CLK pin interrupts
@@ -124,9 +122,7 @@ class Rotary(object):
                 self._value, incr, self._min_val, self._max_val)
         else:
             self._value = self._value + incr
-
-        if self._value_change_callback is not None:
-            self._value_change_callback(self._value)
+        # print("process_rotary_pins:", self._value)
 
     def set_incr(self, incr):
         self._incr = incr
