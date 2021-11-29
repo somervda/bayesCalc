@@ -19,7 +19,7 @@ def test_main():
     i2c = machine.I2C(0, scl=machine.Pin(17), sda=machine.Pin(16))
     lcd = I2cLcd(i2c, DEFAULT_I2C_ADDR, 2, 16)
     lcd.putstr("It Works!\nSecond Line")
-    sleep_ms(3000)
+    # sleep_ms(3000)
     # lcd.clear()
     # count = 0
     # while True:

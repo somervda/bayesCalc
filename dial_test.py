@@ -19,19 +19,21 @@ oled3D1 = SSD1306_I2C(OLED_WIDTH, OLED_HEIGHT, i2c1, addr=0x3D)
 oled3C1 = SSD1306_I2C(OLED_WIDTH, OLED_HEIGHT, i2c1, addr=0x3C)
 
 # create Dial_OLED objects for each oled, this performs the required formating
-dial_oled3D0 = Dial_Oled(oled3D0, "P(B)", isPercentage=True)
-dial_oled3C0 = Dial_Oled(oled3C0, "P(B|A)", isPercentage=False)
-dial_oled3D1 = Dial_Oled(oled3D1, "P(B)", isPercentage=True)
-dial_oled3C1 = Dial_Oled(oled3C1, "P(B|A)", isPercentage=False)
+oled3 = Dial_Oled(oled3D0, "3", isPercentage=False)
+oled4 = Dial_Oled(oled3C0, "4", isPercentage=False)
+oled1 = Dial_Oled(oled3D1, "1", isPercentage=False)
+oled2 = Dial_Oled(oled3C1, "2", isPercentage=False)
 
 # Fire up the dial objects that will manage the rotary dials
-# dial01 = Dial(15, 14, 13)
-# dial02 = Dial(10, 11, 12)
+dial01 = Dial(0, 1, 2)
+dial02 = Dial(6, 7, 8)
+dial03 = Dial(5, 4, 3)
+dial04 = Dial(10, 11, 12)
 
 # Create a tight loop to monitor and display the dial object values
 while True:
-    time.sleep_ms(500)
-    dial_oled3D0.show_value(0)
-    dial_oled3C0.show_value(0)
-    dial_oled3D1.show_value(0)
-    dial_oled3C1.show_value(0)
+    time.sleep_ms(50)
+    oled1.show_value(dial01.getvalue())
+    oled2.show_value(dial02.getvalue())
+    oled3.show_value(dial03.getvalue())
+    oled4.show_value(dial04.getvalue())
