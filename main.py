@@ -1,9 +1,11 @@
+# Bayes Calculator
 from dial import Dial
 import time
 from ssd1306 import SSD1306_I2C
 from dial_oled import Dial_Oled
 from machine_i2c_lcd import I2cLcd
 from machine import Pin, I2C
+import machine
 import sys
 # The PCF8574 has a jumper selectable address: 0x20 - 0x27
 DEFAULT_I2C_ADDR = 0x27
@@ -27,16 +29,26 @@ oled3C0 = SSD1306_I2C(OLED_WIDTH, OLED_HEIGHT, i2c0, addr=0x3C)
 oled3D1 = SSD1306_I2C(OLED_WIDTH, OLED_HEIGHT, i2c1, addr=0x3D)
 oled3C1 = SSD1306_I2C(OLED_WIDTH, OLED_HEIGHT, i2c1, addr=0x3C)
 
+# Set up switch to get whether the calculator will take
+# 3 or for inputs
+# For three inputs the formula is P(B|A)P(A) / P(B) in this case the third input represets P(B)
+# for four inputs the formula is P(B|A)P(A) / (P(B|A)P(A) + P(B|!A)(!A))
+is4DialMode = Pin(15, Pin.IN, Pin.PULL_UP)
+lastIs4DialMode = is4DialMode.value()
+
 # create Dial_OLED objects for each oled, this performs the required formating
+#  BTW: I messed up - I only needed 3 inputs because B(!A) = 1-P(A)
+#  For now I will just have inputs 1 and 4 automatically adjust when one is turned
 isPercentPin = Pin(14, Pin.IN, Pin.PULL_UP)
 lastIsPercent = isPercentPin.value()
-oled3 = Dial_Oled(oled3D0, "3", isPercentage=lastIsPercent)
-oled4 = Dial_Oled(oled3C0, "4", isPercentage=lastIsPercent)
-oled1 = Dial_Oled(oled3D1, "1", isPercentage=lastIsPercent)
-oled2 = Dial_Oled(oled3C1, "2", isPercentage=lastIsPercent)
+oled1 = Dial_Oled(oled3D1, "P(B|A)", isPercentage=lastIsPercent)
+oled2 = Dial_Oled(oled3C1, "P(A)", isPercentage=lastIsPercent)
+if is4DialMode.value():
+    oled3 = Dial_Oled(oled3D0, "P(B|!A)", isPercentage=lastIsPercent)
+else:
+    oled3 = Dial_Oled(oled3D0, "P(B)", isPercentage=lastIsPercent)
+oled4 = Dial_Oled(oled3C0, "P(!A)", isPercentage=lastIsPercent)
 
-is3or4 = Pin(15, Pin.IN, Pin.PULL_UP)
-last3or4 = is3or4.value()
 
 # Added a reset button, Keyboard Interupt was not working when in a loop
 isReset = Pin(21, Pin.IN, Pin.PULL_UP)
@@ -47,6 +59,7 @@ dial01 = Dial(0, 1, 2)
 dial02 = Dial(6, 7, 8)
 dial03 = Dial(5, 4, 3)
 dial04 = Dial(10, 11, 12)
+# dial04.value = 1000
 
 lastDial1Value = -1
 lastDial2Value = -1
@@ -64,6 +77,9 @@ while True:
     time.sleep_ms(50)
     if isReset.value() == 0:
         break
+    if lastIs4DialMode != is4DialMode.value():
+        # Restart in new mode
+        machine.reset()
     print(".", end="")
     if lastIsPercent != isPercentPin.value() or lastDial1Value != dial01.getvalue() or lastDial2Value != dial02.getvalue() or lastDial3Value != dial03.getvalue() or lastDial4Value != dial04.getvalue():
         displayRefresh = True
@@ -83,14 +99,14 @@ while True:
         oled1.show_value(dial01.getvalue())
         oled2.show_value(dial02.getvalue())
         oled3.show_value(dial03.getvalue())
-        if is3or4.value():
+        if is4DialMode.value():
             oled4.show_value(dial04.getvalue())
         lastDial1Value = dial01.getvalue()
         lastDial2Value = dial02.getvalue()
         lastDial3Value = dial03.getvalue()
         lastDial4Value = dial04.getvalue()
         lcd.clear()
-        lcd.putstr("Bayes Calculator\n" + str(dial01.getvalue()))
+        lcd.putstr("Bayes Calculator\nP(A|B) : " + str(dial01.getvalue()))
 
 
 print("/nReset button pressed - exiting")

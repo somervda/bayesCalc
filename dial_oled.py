@@ -53,8 +53,10 @@ class Dial_Oled:
     def set_prompt(self, prompt):
         self.prompt = prompt
 
-    def show(self):
+    def clear_value(self):
+        self.oled.fill(0)
 
+    def show(self):
         self.oled.line(0, 15, self.oled.width - 1, 15, 1)
         wri = Writer(self.oled, freesansnum35, verbose=False)
         Writer.set_textpos(self.oled, 0, 0)

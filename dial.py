@@ -27,7 +27,7 @@ class Dial:
                                 pin_num_sw=self._pin_num_sw,
                                 min_val=0,
                                 max_val=1000,
-                                reverse=False,
+                                reverse=True,
                                 range_mode=RotaryIRQ.RANGE_BOUNDED,
                                 incr=100)
 
