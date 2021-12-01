@@ -34,3 +34,7 @@ class Dial:
     def getvalue(self):
         # print("dial value:", self.rotary.value())
         return self.rotary.value()
+
+    def setvalue(self, value):
+        print("dial set value:", value)
+        self.rotary._value = value

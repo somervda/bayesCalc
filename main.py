@@ -59,7 +59,7 @@ dial01 = Dial(0, 1, 2)
 dial02 = Dial(6, 7, 8)
 dial03 = Dial(5, 4, 3)
 dial04 = Dial(10, 11, 12)
-# dial04.value = 1000
+dial04.setvalue(1000)
 
 lastDial1Value = -1
 lastDial2Value = -1
@@ -89,12 +89,18 @@ while True:
     if displayRefresh:
         oled1.clear_value()
         oled1.set_isPercentage(isPercentPin.value())
-        oled2.clear_value()
-        oled2.set_isPercentage(isPercentPin.value())
+        if (lastDial2Value != dial02.getvalue()) or lastIsPercent != isPercentPin.value():
+            # Changes to P(A) results in inverse change to P(!A)
+            oled2.clear_value()
+            dial04.setvalue(1000 - dial02.getvalue())
+            oled2.set_isPercentage(isPercentPin.value())
         oled3.clear_value()
         oled3.set_isPercentage(isPercentPin.value())
-        oled4.clear_value()
-        oled4.set_isPercentage(isPercentPin.value())
+        if (lastDial4Value != dial04.getvalue()) or lastIsPercent != isPercentPin.value():
+            oled4.clear_value()
+            oled4.set_isPercentage(isPercentPin.value())
+            dial02.setvalue(1000 - dial04.getvalue())
+
         lastIsPercent = isPercentPin.value()
         oled1.show_value(dial01.getvalue())
         oled2.show_value(dial02.getvalue())
@@ -106,7 +112,20 @@ while True:
         lastDial3Value = dial03.getvalue()
         lastDial4Value = dial04.getvalue()
         lcd.clear()
-        lcd.putstr("Bayes Calculator\nP(A|B) : " + str(dial01.getvalue()))
+        result = -1
+        # Do the calculation
+        if is4DialMode.value():
+            if ((dial01.getvalue() * dial02.getvalue()) + (dial03.getvalue() * dial04.getvalue())) != 0:
+                result = (dial01.getvalue() * dial02.getvalue()) // ((dial01.getvalue()
+                                                                      * dial02.getvalue()) + (dial03.getvalue() * dial04.getvalue()))
+        else:
+            if dial03.getvalue() != 0:
+                result = (dial01.getvalue() * dial02.getvalue()
+                          ) // dial03.getvalue()
+        if isPercentPin.value():
+            lcd.putstr("Bayes Calculator\nP(A|B) : " + str(result/10) + "%")
+        else:
+            lcd.putstr("Bayes Calculator\nP(A|B) : " + str(result/1000))
 
 
 print("/nReset button pressed - exiting")
