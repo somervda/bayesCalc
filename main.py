@@ -69,9 +69,6 @@ lastDial4Value = -1
 lcd.clear()
 lcd.putstr("Bayes Calculator")
 
-stored_exception = None
-
-
 # Create a tight loop to monitor and display the dial object values
 while True:
     time.sleep_ms(50)
@@ -114,6 +111,7 @@ while True:
         lcd.clear()
         result = -1
         # Do the calculation
+
         if is4DialMode.value():
             if ((dial01.getvalue() * dial02.getvalue()) + (dial03.getvalue() * dial04.getvalue())) != 0:
                 result = (dial01.getvalue() * dial02.getvalue()) // ((dial01.getvalue()
@@ -122,10 +120,16 @@ while True:
             if dial03.getvalue() != 0:
                 result = (dial01.getvalue() * dial02.getvalue()
                           ) // dial03.getvalue()
-        if isPercentPin.value():
-            lcd.putstr("Bayes Calculator\nP(A|B) : " + str(result/10) + "%")
+        #   Show the result
+        if result == -1:
+            lcd.putstr("Bayes Calculator\nP(A|B) : N/A")
         else:
-            lcd.putstr("Bayes Calculator\nP(A|B) : " + str(result/1000))
+            if isPercentPin.value():
+                lcd.putstr("Bayes Calculator\nP(A|B) : " +
+                           str(round(result/10, 1)) + "%")
+            else:
+                lcd.putstr("Bayes Calculator\nP(A|B) : " +
+                           str(round(result/1000, 3)))
 
 
 print("/nReset button pressed - exiting")
