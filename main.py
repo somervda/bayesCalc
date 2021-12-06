@@ -32,7 +32,7 @@ oled3C1 = SSD1306_I2C(OLED_WIDTH, OLED_HEIGHT, i2c1, addr=0x3C)
 # Set up switch to get whether the calculator will take
 # 3 or for inputs
 # For three inputs the formula is P(B|A)P(A) / P(B) in this case the third input represets P(B)
-# for four inputs the formula is P(B|A)P(A) / (P(B|A)P(A) + P(B|!A)(!A))
+# for four inputs the formula is P(B|A)P(A) / (P(B|A)P(A) + P(B|!A)P(!A))
 is4DialMode = Pin(15, Pin.IN, Pin.PULL_UP)
 lastIs4DialMode = is4DialMode.value()
 
