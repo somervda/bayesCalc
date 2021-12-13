@@ -114,8 +114,8 @@ while True:
 
         if is4DialMode.value():
             if ((dial01.getvalue() * dial02.getvalue()) + (dial03.getvalue() * dial04.getvalue())) != 0:
-                result = (dial01.getvalue() * dial02.getvalue()) // ((dial01.getvalue()
-                                                                      * dial02.getvalue()) + (dial03.getvalue() * dial04.getvalue()))
+                result = (dial01.getvalue() * dial02.getvalue() * 1000) // ((dial01.getvalue()
+                                                                             * dial02.getvalue()) + (dial03.getvalue() * dial04.getvalue()))
         else:
             if dial03.getvalue() != 0:
                 result = (dial01.getvalue() * dial02.getvalue()
